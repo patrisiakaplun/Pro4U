@@ -26,15 +26,15 @@ PRICE = 100
 USER_INFORMATION = {'username': ['testusername', 'testusername2', 'testusername3'],
                     'password': ['testpassword', 'testpassword2', 'testpassword3'],
                     'first_name': ['Bob', 'john'],
-                    'last_name': ['Builder'],
+                    'last_name': ['Builder', 'Doe'],
                     'email': ['test@test.com', 'test2@test.com', 'test3@test.com'],
                     'last_login': [timezone.now()]}
 
 PROFILE_INFORMATION = {'profile_type': [UserType.Client, UserType.Professional],
                        'phone_number': ['123456789', '987654321', '1212121212'],
-                       'country': ['USA'],
-                       'city': ['New York'],
-                       'address': ['123 Main St']}
+                       'country': ['USA', 'Israel'],
+                       'city': ['New York', 'Tel Aviv'],
+                       'address': ['123 Main St', '456 Main St']}
 
 PROFESSIONAL_INFORMATION = {'profession': [Professions.Locksmith, Professions.Plumber],
                             'description': ['Test Description']}
@@ -99,7 +99,7 @@ def make_professional(make_profile):
         country: str = PROFILE_INFORMATION.get('country')[0],
         city: str = PROFILE_INFORMATION.get('city')[0],
         address: str = PROFILE_INFORMATION.get('address')[0],
-        user_type: UserType = PROFILE_INFORMATION.get('profile_type')[0],
+        user_type: UserType = PROFILE_INFORMATION.get('profile_type')[1],
         profession: Professions = PROFESSIONAL_INFORMATION.get('profession')[0],
         description: str = PROFESSIONAL_INFORMATION.get('description')[0],
     ):
@@ -116,7 +116,7 @@ def make_professional(make_profile):
 
 
 @pytest.fixture
-def make_client(make_profile):
+def make_client(make_profile) -> Callable:
     def make(
         username: str = USER_INFORMATION.get('username')[0],
         password: str = USER_INFORMATION.get('password')[0],
@@ -201,6 +201,10 @@ def make_appointment(professional, demo_client2, make_typeOfJob):
                                                  start_appointment=start_appointment,
                                                  end_appointment=end_appointment,
                                                  summary=summary)
+        appointment.professional_id.save()
+        appointment.client_id.save()
+        appointment.typeOfJob_id.save()
+        appointment.save()
         return appointment
 
     return make
